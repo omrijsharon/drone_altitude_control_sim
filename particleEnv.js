@@ -22,7 +22,7 @@ class ParticleEnv {
     }
 
     reset(initPosition = null) {
-        this.position = [0, this.radius * 15];
+        this.position = [0, this.radius * 2];
         if (initPosition !== null) {
             this.position = initPosition;
         }
