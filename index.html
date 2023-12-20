@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Particle Simulation</title>
+    <style>
+        #controls label {
+            display: inline-block;
+            width: 150px;  /* Fixed width for labels */
+        }
+        #controls span {
+            width: 50px;
+            display: inline-block;
+        }
+    </style>
+</head>
+<body>
+    <div id="controls">
+        <label for="kpSlider">kP:</label>
+        <input type="range" id="kpSlider" min="0" max="30" step="0.1" value="5"><span id="kpValue">5</span><br>
+
+        <label for="kiSlider">kI:</label>
+        <input type="range" id="kiSlider" min="0" max="30" step="0.1" value="1"><span id="kiValue">1</span><br>
+
+        <label for="kdSlider">kD:</label>
+        <input type="range" id="kdSlider" min="0" max="30" step="0.1" value="20"><span id="kdValue">20</span><br>
+
+        <label for="kffSlider">kFF:</label>
+        <input type="range" id="kffSlider" min="0" max="30" step="0.1" value="0"><span id="kffValue">0</span><br>
+
+        <label for="intLimitSlider">Integral Limit:</label>
+        <input type="range" id="intLimitSlider" min="1" max="100" value="10"><span id="intLimitValue">10</span><br>
+
+        <label for="derEMASlider">Derivative EMA:</label>
+        <input type="range" id="derEMASlider" min="0" max="1" step="0.01" value="0.9"><span id="derEMAValue">0.9</span><br>
+
+        <label for="measEMASlider">Measurement EMA:</label>
+        <input type="range" id="measEMASlider" min="0" max="1" step="0.01" value="0.5"><span id="measEMAValue">0.5</span><br>
+    </div>
+
+    <canvas id="simulationCanvas" width="800" height="600"></canvas>
+    <script src="particleEnv.js"></script>
+    <script src="pid.js"></script>
+    <script src="main.js"></script>
+</body>
+</html>
