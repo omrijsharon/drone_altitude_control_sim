@@ -1,1 +1,1 @@
-# [drone_altitude_control_sim](https://omrijsharon.github.com/drone_altitude_control_sim)
+# [drone_altitude_control_sim](https://omrijsharon.github.io/drone_altitude_control_sim)
