@@ -1,7 +1,7 @@
 class ParticleEnv {
     constructor(sensor_std) {
         this.gravity = 9.8;  // Gravity constant
-        this.mass = 1.0;     // Mass of the particle
+        this.mass = 0.6;     // Mass of the particle
         this.radius = 1.0;   // Radius of the particle
         this.k = 100;        // Spring constant
         this.mu = 0.1;       // Friction coefficient
@@ -10,11 +10,15 @@ class ParticleEnv {
         this.position = [0, 0];
         this.velocity = [0, 0];
         this.edge = 10.0;    // Edge of the box
+        this.minThrust = 0.1 * 9.8;  // Minimum thrust in Newtons
+        this.maxThrust = 1.5 * 9.8;  // Maximum thrust in Newtons
         this.t0 = null;
         this.action = null;
         this.force = null;
         this.actionArrow = null;
         this.forceArrow = null;
+        this.actionHistory = [];  // Store the history of actions
+        this.maxHistorySize = 100; // Maximum size of the history
     }
 
     reset(initPosition = null) {
@@ -33,6 +37,12 @@ class ParticleEnv {
         this.t0 = t1;
         this.action = action;
 
+        // clip action to min and max thrust
+        this.action[1] = Math.max(Math.min(this.action[1], this.maxThrust), this.minThrust);
+        this.actionHistory.push(this.action[1]); // Storing only the Y component
+        if (this.actionHistory.length > this.maxHistorySize) {
+            this.actionHistory.shift(); // Remove the oldest entry
+        }
         // Gravity force
         this.force = [0, -this.gravity * this.mass];
         // Spring force
@@ -111,28 +121,77 @@ class ParticleEnv {
     
         // Define a fixed length for the arrows for better visibility
         const arrowLength = 50;  // Adjust this value as needed
-    
-        // Draw the action arrow
+
+        // Draw the action arrow (scaled by g)
         if (this.action) {
-            const actionAngle = Math.atan2(-this.action[1], this.action[0]);
-            this._drawArrow(ctx, x, y, x + arrowLength * Math.cos(actionAngle), y + arrowLength * Math.sin(actionAngle), 'red');
+            this._drawArrow(ctx, x, y, this.action, 'red');
         }
-    
-        // Draw the force arrow
+
+        // Draw the force arrow (scaled by g)
         if (this.force) {
-            const forceAngle = Math.atan2(-this.force[1], this.force[0]);
-            this._drawArrow(ctx, x, y, x + arrowLength * Math.cos(forceAngle), y + arrowLength * Math.sin(forceAngle), 'green');
+            this._drawArrow(ctx, x, y, this.force, 'green');
         }
+        this._drawGraph(ctx);
     }
     
+    _drawGraph(ctx) {
+        const graphWidth = ctx.canvas.width;
+        const graphHeight = 100; // Fixed height for the graph
+        const graphBottom = ctx.canvas.height; // Position graph at the bottom of the canvas
     
+        // Background for the graph
+        ctx.fillStyle = 'lightgray';
+        ctx.fillRect(0, graphBottom - graphHeight, graphWidth, graphHeight);
     
+        // Prepare to draw the graph line
+        ctx.strokeStyle = 'black';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+    
+        const stepSize = graphWidth / this.maxHistorySize;
+    
+        for (let i = 0; i < this.actionHistory.length; i++) {
+            const x = stepSize * i;
+            const y = graphBottom - (this.actionHistory[i] * graphHeight); // Scale action value to graph height
+    
+            if (i === 0) ctx.moveTo(x, y);
+            else ctx.lineTo(x, y);
+        }
+    
+        ctx.stroke(); // Draw the graph line
+    }    
 
-    _drawArrow(ctx, fromX, fromY, toX, toY, color) {
+    _drawArrow(ctx, fromX, fromY, vector, color) {
+        const g = 9.8;  // Acceleration due to gravity
+        const scaleFactor = 50;  // Adjust this for desired arrow size
+    
+        // Calculate the scaled vector
+        const scaledVector = [vector[0] / g * scaleFactor, vector[1] / g * scaleFactor];
+    
+        // Calculate the end point of the arrow
+        const toX = fromX + scaledVector[0];
+        const toY = fromY - scaledVector[1]; // Subtract because canvas y-axis is inverted
+    
+        // Draw the line
         ctx.beginPath();
         ctx.moveTo(fromX, fromY);
         ctx.lineTo(toX, toY);
         ctx.strokeStyle = color;
+        ctx.lineWidth = 3;  // Set the line width of the arrow
         ctx.stroke();
+    
+        // Draw the arrowhead
+        const angle = Math.atan2(-scaledVector[1], scaledVector[0]);
+        const arrowHeadLength = 10;  // Arrowhead length
+        const arrowHeadWidth = 7;  // Arrowhead width
+    
+        ctx.beginPath();
+        ctx.moveTo(toX, toY);
+        ctx.lineTo(toX - arrowHeadLength * Math.cos(angle - Math.PI / 6), toY - arrowHeadLength * Math.sin(angle - Math.PI / 6));
+        ctx.lineTo(toX - arrowHeadLength * Math.cos(angle + Math.PI / 6), toY - arrowHeadLength * Math.sin(angle + Math.PI / 6));
+        ctx.lineTo(toX, toY);
+        ctx.lineTo(toX - arrowHeadLength * Math.cos(angle - Math.PI / 6), toY - arrowHeadLength * Math.sin(angle - Math.PI / 6));
+        ctx.fillStyle = color;
+        ctx.fill();
     }
 }

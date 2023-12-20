@@ -11,6 +11,7 @@ class PID {
         this.previousMeasurement = 0;
         this.previousDerivative = 0;
         this.previousSetpoint = 0;
+        this.previousOutput = 0;
         this.t0 = null;
     }
 
@@ -18,6 +19,7 @@ class PID {
         this.integral = 0;
         this.previousMeasurement = previousMeasurement;
         this.previousSetpoint = previousSetpoint;
+        this.previousOutput = 0;
         this.t0 = performance.now();
     }
 
@@ -42,9 +44,11 @@ class PID {
         const ff = (setpoint - this.previousSetpoint) / dt;
         const output = this.Kp * error + this.Ki * this.integral * 0.1 - 
                        this.Kd * smoothedDerivative + this.kFF * ff;
-
-        this.previousMeasurement = measuredValue;
+        // const p = 0.8;
+        // output = p * output + (1 - p) * this.previousOutput;
         this.previousSetpoint = setpoint;
+        this.previousMeasurement = measuredValue;
+        this.previousOutput = output;
 
         return output;
     }
