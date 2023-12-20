@@ -27,7 +27,11 @@ function updatePIDParameters() {
 
 // Initialize sliders
 updatePIDParameters();
-
+document.getElementById('resetButton').addEventListener('click', function() {
+    // Reset the env and pid instances
+    env.reset();
+    pid.reset();
+});
 // Add event listeners to sliders
 document.getElementById('kpSlider').addEventListener('input', updatePIDParameters);
 document.getElementById('kiSlider').addEventListener('input', updatePIDParameters);
@@ -39,7 +43,7 @@ document.getElementById('measEMASlider').addEventListener('input', updatePIDPara
 
 function animate() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    let action = [0, pid.update(position[1], setpoint)];
+    let action = [0, 0.1 * pid.update(position[1], setpoint)];
     let [obs, done] = env.step(action);
     position = obs;
     env.render(ctx);

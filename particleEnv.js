@@ -4,7 +4,7 @@ class ParticleEnv {
         this.mass = 0.6;     // Mass of the particle
         this.radius = 1.0;   // Radius of the particle
         this.k = 100;        // Spring constant
-        this.mu = 0.1;       // Friction coefficient
+        this.mu = 0.0;       // Friction coefficient
         this.dt = null;      // Time step
         this.sensor_std = sensor_std;  // Standard deviation of the sensor noise
         this.position = [0, 0];
@@ -22,7 +22,7 @@ class ParticleEnv {
     }
 
     reset(initPosition = null) {
-        this.position = [0, this.radius * 2];
+        this.position = [0, this.radius * 15];
         if (initPosition !== null) {
             this.position = initPosition;
         }

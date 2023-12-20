@@ -7,6 +7,7 @@ class PID {
         this.integralLimit = integralLimit;
         this.derivativeEMASmooth = derivativeEMASmooth;
         this.measurementEMASmooth = measurementEMASmooth;
+        this.outputEMAsmooth = 0.01;
         this.integral = 0;
         this.previousMeasurement = 0;
         this.previousDerivative = 0;
@@ -28,27 +29,23 @@ class PID {
         const dt = (t1 - this.t0) / 1000;  // Convert to seconds
         this.t0 = t1;
 
-        measuredValue = measuredValue * (1 - this.measurementEMASmooth) +
-                        this.previousMeasurement * this.measurementEMASmooth;
-        const error = setpoint - measuredValue;
+        const measuredValueEMA = measuredValue * (1 - this.measurementEMASmooth) + this.previousMeasurement * this.measurementEMASmooth;
+        const error = setpoint - measuredValueEMA;
 
         this.integral += error * dt;
         this.integral = Math.max(Math.min(this.integral, this.integralLimit), -this.integralLimit);
 
-        const derivative = (measuredValue - this.previousMeasurement) / dt;
-        const smoothedDerivative = derivative * (1 - this.derivativeEMASmooth) +
-                                   this.previousDerivative * this.derivativeEMASmooth;
-
-        this.previousDerivative = smoothedDerivative;
+        const derivative = (measuredValueEMA - this.previousMeasurement) / dt;
+        const derivativeEMA = derivative * (1 - this.derivativeEMASmooth) + this.previousDerivative * this.derivativeEMASmooth;
 
         const ff = (setpoint - this.previousSetpoint) / dt;
         const output = this.Kp * error + this.Ki * this.integral * 0.1 - 
-                       this.Kd * smoothedDerivative + this.kFF * ff;
-        // const p = 0.8;
-        // output = p * output + (1 - p) * this.previousOutput;
+                       this.Kd * derivativeEMA + this.kFF * ff;
+        const outputEMA = this.outputEMAsmooth * output + (1 - this.outputEMAsmooth) * this.previousOutput;
         this.previousSetpoint = setpoint;
-        this.previousMeasurement = measuredValue;
-        this.previousOutput = output;
+        this.previousMeasurement = measuredValueEMA;
+        this.previousDerivative = derivativeEMA;
+        this.previousOutput = outputEMA;
 
         return output;
     }
