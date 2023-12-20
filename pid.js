@@ -7,7 +7,7 @@ class PID {
         this.integralLimit = integralLimit;
         this.derivativeEMASmooth = derivativeEMASmooth;
         this.measurementEMASmooth = measurementEMASmooth;
-        this.outputEMAsmooth = 0.01;
+        this.outputEMAsmooth = 0.1;
         this.integral = 0;
         this.previousMeasurement = 0;
         this.previousDerivative = 0;
@@ -47,6 +47,6 @@ class PID {
         this.previousDerivative = derivativeEMA;
         this.previousOutput = outputEMA;
 
-        return output;
+        return outputEMA;
     }
 }

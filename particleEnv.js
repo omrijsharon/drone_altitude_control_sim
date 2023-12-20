@@ -152,7 +152,7 @@ class ParticleEnv {
     
         for (let i = 0; i < this.actionHistory.length; i++) {
             const x = stepSize * i;
-            const y = graphBottom - (this.actionHistory[i] * graphHeight); // Scale action value to graph height
+            const y = graphBottom - (this.actionHistory[i] * graphHeight*0.5); // Scale action value to graph height
     
             if (i === 0) ctx.moveTo(x, y);
             else ctx.lineTo(x, y);
