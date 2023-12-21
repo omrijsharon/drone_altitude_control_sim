@@ -1,7 +1,7 @@
 let canvas = document.getElementById('simulationCanvas');
 let ctx = canvas.getContext('2d');
 
-let env = new ParticleEnv(0.1);
+let env = new ParticleEnv(0.5);
 let pid = new PID(5.0, 1.0, 20.0, 0.0, 10, 0.9, 0.5);
 let position = env.reset();
 let setpoint = 10.0;
