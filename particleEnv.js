@@ -19,6 +19,7 @@ class ParticleEnv {
         this.forceArrow = null;
         this.actionHistory = [];  // Store the history of actions
         this.maxHistorySize = 100; // Maximum size of the history
+        this.setpoint = 10.0;
     }
 
     reset(initPosition = null) {
@@ -88,6 +89,10 @@ class ParticleEnv {
         return mean + stdDev * Math.sqrt(-2.0 * Math.log(u)) * Math.cos(2.0 * Math.PI * v);
     }
 
+    setSetpoint(setpoint) {
+        this.setpoint = setpoint;
+    }
+
     render(ctx) {
         // Canvas dimensions
         const canvasWidth = ctx.canvas.width;
@@ -99,8 +104,9 @@ class ParticleEnv {
     
         // Position the setpoint ball at a fixed, visible location
         // For example, near the center of the canvas
-        const setpointX = canvasWidth / 2 + 50; // 50 pixels to the right of the center
-        const setpointY = canvasHeight / 2; // Vertically centered
+        const setpointX = canvasWidth / 2 ;
+        // calculated the setpointY by this.setpoint
+        const setpointY = (2 * this.edge - this.setpoint) * scaleY;
     
         // Draw the setpoint ball (green, less transparent and slightly larger)
         const setpointRadius = this.radius * Math.min(scaleX, scaleY) * 1.2; // 20% larger than the particle

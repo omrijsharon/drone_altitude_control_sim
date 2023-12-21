@@ -15,7 +15,13 @@
     </style>
 </head>
 <body>
-    <div id="controls">       
+    <div id="controls">     
+        <label for="setpointSlider">Setpoint:</label>
+        <input type="range" id="setpointSlider" min="0" max="15" step=0.01 value="10"><span id="setpointValue">50</span><br>
+        
+        <label for="sensorStdSlider">Sensor Noise:</label>
+        <input type="range" id="sensorStdSlider" min="0" max="1" step="0.01" value="0.5"><span id="sensorStdValue">0</span><br>
+
         <label for="kpSlider">kP:</label>
         <input type="range" id="kpSlider" min="0" max="100" step="0.1" value="11"><span id="kpValue">5</span><br>
 
@@ -36,6 +42,9 @@
 
         <label for="measEMASlider">Measurement EMA:</label>
         <input type="range" id="measEMASlider" min="0" max="1" step="0.01" value="0.8"><span id="measEMAValue">0.5</span><br>
+
+        <label for="outEMASlider">Output EMA:</label>
+        <input type="range" id="outEMASlider" min="0" max="1" step="0.01" value="0.8"><span id="outEMAValue">0.5</span><br>
 
         <button id="resetButton">Reset</button>
 

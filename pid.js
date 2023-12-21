@@ -1,5 +1,5 @@
 class PID {
-    constructor(Kp, Ki, Kd, kFF, integralLimit, derivativeEMASmooth, measurementEMASmooth) {
+    constructor(Kp, Ki, Kd, kFF, integralLimit, derivativeEMASmooth, measurementEMASmooth, outputEMAsmooth) {
         this.Kp = Kp;
         this.Ki = Ki;
         this.Kd = Kd;
@@ -7,7 +7,7 @@ class PID {
         this.integralLimit = integralLimit;
         this.derivativeEMASmooth = derivativeEMASmooth;
         this.measurementEMASmooth = measurementEMASmooth;
-        this.outputEMAsmooth = 0.1;
+        this.outputEMAsmooth = outputEMAsmooth;
         this.integral = 0;
         this.previousMeasurement = 0;
         this.previousDerivative = 0;
@@ -41,7 +41,7 @@ class PID {
         const ff = (setpoint - this.previousSetpoint) / dt;
         const output = this.Kp * error + this.Ki * this.integral * 0.1 - 
                        this.Kd * derivativeEMA + this.kFF * ff;
-        const outputEMA = this.outputEMAsmooth * output + (1 - this.outputEMAsmooth) * this.previousOutput;
+        const outputEMA = (1 - this.outputEMAsmooth) * output + this.outputEMAsmooth * this.previousOutput;
         this.previousSetpoint = setpoint;
         this.previousMeasurement = measuredValueEMA;
         this.previousDerivative = derivativeEMA;
